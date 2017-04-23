@@ -1,29 +1,22 @@
 function [retardance, opticAxis] = FitRetardanceMeasurement(theta, intensity)
 
+fftI = fft(intensity);
+opticAxis = -angle(fftI(5))*90/(pi);
+B = abs(fftI(1))/length(intensity);
+A = 2*abs(fftI(5))/length(intensity);
 
-%% Fit: 'untitled fit 5'.
-[xData, yData] = prepareCurveData( theta, intensity );
+I45FT = (B-A) / (B+A);
+retardance = acosd(2*I45FT-1)/360;
 
-% Set up fittype and options.
-ft = fittype( 'A*cosd((x-phase)*4)+B', 'independent', 'x', 'dependent', 'y' );
-opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
-opts.Display = 'Off';
-opts.StartPoint = [0.75 0.25 0];
-
-% Fit model to data.
-[fitresult, gof] = fit( xData, yData, ft, opts );
-
-% Plot fit with data.
 figure;
-h = plot( fitresult, xData, yData );
+plot(theta, intensity, 'o'); hold on
 
-I45 = (fitresult.B-fitresult.A) / (fitresult.B+fitresult.A);
-retardance = acosd(2*I45-1)/360;
-opticAxis = fitresult.phase*2;
-% Label axes
-%xlabel x
-%ylabel y
-grid on
+fftCalc = zeros(size(fftI));
+fftCalc(1) = abs(fftI(1));
+fftCalc(5) = fftI(5);
+fftCalc(end-3) = fftI(end-3);
+plot(theta, real(ifft(fftCalc)));
+grid on;
 
 end
 
