@@ -5,6 +5,9 @@ function [ S, calculatedI ] = StokesFromWPScan( intensity, angle, retardance )
 %   retardance: retardance of WP in waves
 %   Returns the stokes vector in S, and the calcualted trace in calc.
 
+% equations from thesis of Sebastian Arnoldt
+% http://quantum-technologies.iap.uni-bonn.de/en/diplom-theses.html?task=download&file=216&token=294e84a6672a486d881880d560973c68
+
 fftI = fft(intensity);
 
 %delete all other frequencies
@@ -31,5 +34,11 @@ S(3) = -2*d/(2*sind(360*retardance/2)^2);
 S(4) = b/sind(360*retardance);
 
 S = S./S(1);
+
+figure;
+plot(angle, intensity, 'o'); hold on
+plot(angle, calculatedI);
+grid on;
+
 end
 
