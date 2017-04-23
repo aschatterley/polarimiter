@@ -59,6 +59,8 @@ handles.output = hObject;
 %handles.stokesTable.Data = [1; 1; 0; 0];
 
 handles.theta = (0:359);
+%handles.theta = linspace(0, 360, 3600);
+%handles.theta = handles.theta(1:end-1);
 
 if ~isfield(handles, 'polPlot')
     %make the scan plot
@@ -184,13 +186,21 @@ end
 
 %finally, stick every angle through a polarizer
 k = 1;
+scanY = zeros(size(handles.polPlot.YData));
+circY = zeros(size(handles.circPlot.YData));
+
 for th=handles.theta
     [ellipse] = MakeEllipse(stokes(:,k), handles.theta);    
-    handles.circPlot.YData(k) = abs(min(ellipse(1:2)) / max(ellipse(1:2)));
     
-    handles.polPlot.YData(k) = Polarizer(stokes(:,k));
+    %updating the plot itself in a loop is slow, that's why I manke another
+    %variable, then copy the whole array
+    circY(k) = abs(min(ellipse(1:2)) / max(ellipse(1:2)));
+    scanY(k) = Polarizer(stokes(:,k));
     k = k+1;
 end
+
+handles.circPlot.YData = circY;
+handles.polPlot.YData = scanY;
 
 handles.stokes = stokes;
 

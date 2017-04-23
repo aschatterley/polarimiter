@@ -27,7 +27,7 @@ d = -2*imag(fftI(5)) / length(angle);
 S = [];
 S(1) = a-c/(tand(360*retardance/2)^2);
 S(2) = 2*c/(2*sind(360*retardance/2)^2);
-S(3) = 2*d/(2*sind(360*retardance/2)^2);
+S(3) = -2*d/(2*sind(360*retardance/2)^2);
 S(4) = b/sind(360*retardance);
 
 S = S./S(1);
