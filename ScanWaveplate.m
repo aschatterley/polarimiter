@@ -217,11 +217,20 @@ handles = guidata(obj);
 
 pos = get(event_obj,'Position');
 output_txt = {['theta: ',num2str(pos(1),4)],...
-    ['I: ',num2str(pos(2),4)]};
+    ['transmission: ',num2str(pos(2),4)], ...
+    ['Q: ',num2str(handles.stokes(2, event_obj.DataIndex))], ...
+    ['U: ',num2str(handles.stokes(3, event_obj.DataIndex))], ...
+    ['V: ',num2str(handles.stokes(4, event_obj.DataIndex))]};
 
 
 [el, handles.elPlot.XData, handles.elPlot.YData] = ...
     MakeEllipse(handles.stokes(:, event_obj.DataIndex), handles.theta);
+
+if (handles.stokes(4, event_obj.DataIndex) < 0)
+    handles.elPlot.Color = 'r';
+else
+    handles.elPlot.Color = 'b';
+end
 
 handles.ellipseLabel.String = sprintf('aspect ratio = %0.3f',...
     abs(min(el(1:2)) / max(el(1:2))));
